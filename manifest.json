@@ -1,8 +1,8 @@
 {
     "name": "Peek-a-View",
-    "description": "Let's you open a link in a small window to peek and interact with it, without moving away from your current page",
-    "version": "1.4",
-    "manifest_version": 2,
+    "description": "Picture-in-picture (PIP) for links! This extension lets you open links in a small window to peek and interact with it, without moving away from your current page",
+    "version": "1",
+    "manifest_version": 1,
     "background": {
         "scripts": ["background.js"],
         "persistent": false
