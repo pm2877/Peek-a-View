@@ -11,7 +11,7 @@ var iframe = document.createElement('iframe');
  * @param {Element} element - the anchor element for which the iframe will be displayed.
  * @returns {HTMLElement|null}
  */
-function generatePeekWindows(hyperLink, element) {
+function generatePeekWindow(hyperLink, element) {
     var iframeHolder = iframe.cloneNode();
 
     var currentStyle = getComputedStyle(element);
@@ -50,23 +50,47 @@ function showPeekWindowOnClick() {
     var element;
     var length = hyperLinks.length;
 
-    for (var i = 0; i < length; i++) {
-        element = hyperLinks[i];
-        // console.log('href: ', element.href);
-        const parentNode = element;
-        const nextSibling = element.firstChild;
-        const peekWindow = generatePeekWindows(element.href, element);
+    document.addEventListener('click', function(event) {
+        var isAnchor = false;
+        event = event || window.event;
+        var target = event.target || event.srcElement;
+    
+        while (target) {
+            if (target instanceof HTMLAnchorElement) {
+            console.log(target.getAttribute('href'));
+            const parentNode = target;
+            const nextSibling = target.firstChild;
+            const peekWindow = generatePeekWindow(target.href, target);
 
-        parentNode.addEventListener('click', function(event) {
+            // console.log("++++++ event +++++++ ", event);
             removePeekWindows();
             if (event.altKey && event.metaKey) {
                 event.stopPropagation();
                 event.preventDefault(); 
                 showPeekWindow(parentNode, peekWindow, nextSibling);
             }
-        });
-        document.addEventListener('click', removePeekWindows);
-    }
+
+            document.addEventListener('click', removePeekWindows);
+            isAnchor = true;
+            break;
+            }
+            target = target.parentNode;
+        }
+        if (!isAnchor && event.altKey && event.metaKey) {
+            var s = window.getSelection();
+            var range = s.getRangeAt(0);
+            var node = s.anchorNode;
+            while (range.toString().indexOf(' ') != 0) {
+                range.setStart(node, (range.startOffset - 1));
+            }
+            range.setStart(node, range.startOffset + 1);
+            do {
+                range.setEnd(node, range.endOffset + 1);
+            } while (range.toString().indexOf(' ') == -1 && range.toString().trim() != '' && range.endOffset < node.length);
+            var str = range.toString().trim();
+            console.log('thesaurus search to be made for: ', str);
+        }
+    }, true);
 }
 
 function showPeekWindow(parentNode, peekWindow, nextSibling) {
