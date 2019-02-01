@@ -7,6 +7,11 @@
         "scripts": ["background.js"],
         "persistent": false
     },
+    "content_scripts": [ {
+        "js": [ "peek.js"],
+        "matches": ["*://*/*"],
+        "all_frames": true
+    }],
     "browser_action": {
         "default_title": "Peek-a-View",
         "default_icon": {
@@ -22,7 +27,10 @@
         "storage",
         "notifications",
         "contextMenus",
-        "activeTab"
+        "tabs",
+        "activeTab",
+        "http://*/",
+        "https://*/"
     ],
     "options_ui": {
         "page": "options.html",
